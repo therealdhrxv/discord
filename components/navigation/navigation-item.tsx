@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import ActionTooltip from "@/components/action-tooltip";
 
@@ -14,18 +14,22 @@ interface NavigationItemProps {
 
 export const NavigationItem = (props: NavigationItemProps) => {
 	const params = useParams();
+	const router = useRouter();
+	const onClickMethod = () => {
+		router.push(`/servers/${props.id}`);
+	};
 	return (
 		<ActionTooltip side="right" align="center" label={props.name}>
 			<button
-				onClick={() => {}}
+				onClick={onClickMethod}
 				className="group realtive flex items-center"
 			>
 				<div
 					className={cn(
 						"absolute left-0 bg-primary rounded-r-full transition-all w-[4px]",
-						params?.id !== props.id &&
+						params?.serverId !== props.id &&
 							"group-hover:h-[20px]",
-						params?.id === props.id
+						params?.serverId === props.id
 							? "h-[36px]"
 							: "h-[8px]"
 					)}
