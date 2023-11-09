@@ -2,7 +2,7 @@ import React from "react";
 import { Plus } from "lucide-react";
 import ActionTooltip from "@/components/action-tooltip";
 
-const NavigationAction = () => {
+export const NavigationAction = () => {
     return (
         <div>
             <ActionTooltip
@@ -22,5 +22,3 @@ const NavigationAction = () => {
         </div>
     );
 };
-
-export default NavigationAction;
