@@ -1,10 +1,13 @@
 "use client";
-import { Copy, RefreshCw } from "lucide-react";
+import { useState } from "react";
+import { Copy, RefreshCw, Check } from "lucide-react";
+import axios from "axios";
 
 import { useModal } from "@/hooks/use-modal-store";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { UseOrigin } from "@/hooks/use-origin";
 import {
 	Dialog,
 	DialogContent,
@@ -13,8 +16,32 @@ import {
 } from "@/components/ui/dialog";
 
 export const InviteModal = () => {
-	const { type, isOpen, onClose } = useModal();
+	const [copied, setCopied] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const origin = UseOrigin();
+
+	const { type, isOpen, onClose, data, onOpen } = useModal();
 	const isModalOpen = isOpen && type === "invite";
+
+	const { server } = data;
+	const inviteURL = `${origin}/invite/${server?.inviteCode}`;
+
+	const onCopy = () => {
+		navigator.clipboard.writeText(inviteURL);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 5000);
+	};
+
+	const onNew = async () => {
+		try {
+			setIsLoading(true);
+			const response = await axios.patch(`/api/servers/${server?.id}/invite-code`);
+			onOpen("invite", { server: response.data })
+		} catch (error) {
+			console.log(error);
+		}
+		setIsLoading(false);
+	}
 
 	return (
 		<>
@@ -33,16 +60,23 @@ export const InviteModal = () => {
 						<div className="flex items-center mt-2 gap-x-2">
 							<Input
 								className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
-								value="Invite link"
+								value={inviteURL}
+								disabled={isLoading}
 							/>
-							<Button size="icon">
-								<Copy className="w-4 h-4" />
+							<Button size="icon" disabled={isLoading} onClick={onCopy}>
+								{copied ? (
+									<Check className="w-4 h-4" />
+								) : (
+									<Copy className="w-4 h-4" />
+								)}
 							</Button>
 						</div>
 						<Button
 							variant="link"
 							size="sm"
 							className="text-xs text-zinc-500 mt-4"
+							disabled={isLoading}
+							onClick={onNew}
 						>
 							Generate a new link
 							<RefreshCw className="w-4 h-4 ml-2" />
