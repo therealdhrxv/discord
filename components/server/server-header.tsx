@@ -27,10 +27,10 @@ interface ServerHeaderProps {
 }
 
 export const ServerHeader = (props: ServerHeaderProps) => {
-
 	const { onOpen } = useModal();
 	const isAdmin = props.role === MemberRole.ADMIN;
-	const isModerator = isAdmin || props.role === MemberRole.MODERATOR;
+	const isModerator =
+		isAdmin || props.role === MemberRole.MODERATOR;
 
 	return (
 		<div>
@@ -59,7 +59,14 @@ export const ServerHeader = (props: ServerHeaderProps) => {
 						</DropdownMenuItem>
 					)}
 					{isAdmin && (
-						<DropdownMenuItem className="px-3 py-2 text-sm cursor-pointer">
+						<DropdownMenuItem
+							className="px-3 py-2 text-sm cursor-pointer"
+							onClick={() =>
+								onOpen("editServer", {
+									server: props.server,
+								})
+							}
+						>
 							Server Settings
 							<Settings className="w-4 h-4 ml-auto" />
 						</DropdownMenuItem>
