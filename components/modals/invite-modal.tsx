@@ -1,7 +1,8 @@
 "use client";
+
+import axios from "axios";
 import { useState } from "react";
 import { Copy, RefreshCw, Check } from "lucide-react";
-import axios from "axios";
 
 import { useModal } from "@/hooks/use-modal-store";
 import { Label } from "@/components/ui/label";
@@ -35,13 +36,15 @@ export const InviteModal = () => {
 	const onNew = async () => {
 		try {
 			setIsLoading(true);
-			const response = await axios.patch(`/api/servers/${server?.id}/invite-code`);
-			onOpen("invite", { server: response.data })
+			const response = await axios.patch(
+				`/api/servers/${server?.id}/invite-code`
+			);
+			onOpen("invite", { server: response.data });
 		} catch (error) {
 			console.log(error);
 		}
 		setIsLoading(false);
-	}
+	};
 
 	return (
 		<>
@@ -63,7 +66,11 @@ export const InviteModal = () => {
 								value={inviteURL}
 								disabled={isLoading}
 							/>
-							<Button size="icon" disabled={isLoading} onClick={onCopy}>
+							<Button
+								size="icon"
+								disabled={isLoading}
+								onClick={onCopy}
+							>
 								{copied ? (
 									<Check className="w-4 h-4" />
 								) : (

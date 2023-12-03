@@ -2,13 +2,15 @@
 
 import axios from "axios";
 import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { FileUpload } from "@/components/file-upload";
-import { useRouter } from "next/navigation";
-import { useModal } from "@/hooks/use-modal-store";
 import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FileUpload } from "@/components/file-upload";
+import { useModal } from "@/hooks/use-modal-store";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -17,7 +19,6 @@ import {
 	DialogTitle,
 	DialogDescription,
 } from "@/components/ui/dialog";
-
 import {
 	Form,
 	FormItem,
@@ -26,9 +27,6 @@ import {
 	FormMessage,
 	FormField,
 } from "@/components/ui/form";
-
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
 	name: z
@@ -43,7 +41,6 @@ const formSchema = z.object({
 });
 
 export const EditServerModal = () => {
-	
 	const { type, isOpen, onClose, data } = useModal();
 	const router = useRouter();
 
@@ -67,9 +64,7 @@ export const EditServerModal = () => {
 
 	const isLoading = form.formState.isSubmitting;
 
-	const onSubmitMethod = async (
-		values: z.infer<typeof formSchema>
-	) => {
+	const onSubmitMethod = async (values: z.infer<typeof formSchema>) => {
 		console.log(values);
 		try {
 			await axios.patch(`/api/servers/${server?.id}`, values);
@@ -96,19 +91,17 @@ export const EditServerModal = () => {
 							Edit your server
 						</DialogTitle>
 						<DialogDescription className="text-zinc-500 text-center">
-							Give your server a personality by adding a
-							name and an avatar. You can always change
-							these later.
+							Give your server a personality by adding a name
+							and an avatar. You can always change these
+							later.
 						</DialogDescription>
 					</DialogHeader>
 					<Form {...form}>
 						<form
-							onSubmit={form.handleSubmit(
-								onSubmitMethod
-							)}
+							onSubmit={form.handleSubmit(onSubmitMethod)}
 							className="space-y-8"
 						>
-							<div className="space-y-8 px-6 ">
+							<div className="space-y-8 px-6">
 								<div className="flex items-center justify-center text-center">
 									<FormField
 										control={form.control}
@@ -118,9 +111,7 @@ export const EditServerModal = () => {
 												<FormControl>
 													<FileUpload
 														endpoint="serverImage"
-														value={
-															field.value
-														}
+														value={field.value}
 														onChange={
 															field.onChange
 														}
@@ -140,9 +131,7 @@ export const EditServerModal = () => {
 											</FormLabel>
 											<FormControl>
 												<Input
-													disabled={
-														isLoading
-													}
+													disabled={isLoading}
 													className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
 													placeholder="Enter a server name"
 													{...field}

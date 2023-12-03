@@ -59,9 +59,7 @@ export const InitialModal = () => {
 
 	const isLoading = form.formState.isSubmitting;
 
-	const onSubmitMethod = async (
-		values: z.infer<typeof formSchema>
-	) => {
+	const onSubmitMethod = async (values: z.infer<typeof formSchema>) => {
 		console.log(values);
 		try {
 			await axios.post("/api/servers", values);
@@ -73,9 +71,7 @@ export const InitialModal = () => {
 		}
 	};
 
-	if (!isMounted) {
-		return null;
-	}
+	if (!isMounted) return null;
 
 	return (
 		<>
@@ -86,19 +82,17 @@ export const InitialModal = () => {
 							Create your server 🚀
 						</DialogTitle>
 						<DialogDescription className="text-zinc-500 text-center">
-							Give your server a personality by adding a
-							name and an avatar. You can always change
-							these later.
+							Give your server a personality by adding a name
+							and an avatar. You can always change these
+							later.
 						</DialogDescription>
 					</DialogHeader>
 					<Form {...form}>
 						<form
-							onSubmit={form.handleSubmit(
-								onSubmitMethod
-							)}
+							onSubmit={form.handleSubmit(onSubmitMethod)}
 							className="space-y-8"
 						>
-							<div className="space-y-8 px-6 ">
+							<div className="space-y-8 px-6">
 								<div className="flex items-center justify-center text-center">
 									<FormField
 										control={form.control}
@@ -108,9 +102,7 @@ export const InitialModal = () => {
 												<FormControl>
 													<FileUpload
 														endpoint="serverImage"
-														value={
-															field.value
-														}
+														value={field.value}
 														onChange={
 															field.onChange
 														}
@@ -130,9 +122,7 @@ export const InitialModal = () => {
 											</FormLabel>
 											<FormControl>
 												<Input
-													disabled={
-														isLoading
-													}
+													disabled={isLoading}
 													className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
 													placeholder="Enter a server name"
 													{...field}
