@@ -6,6 +6,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useParams, useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -48,18 +49,25 @@ const formSchema = z.object({
 });
 
 export const CreateChannelModal = () => {
-	const { type, isOpen, onClose } = useModal();
+	const { type, isOpen, onClose, data } = useModal();
 	const router = useRouter();
 	const isModalOpen = isOpen && type === "createChannel";
 	const params = useParams();
+
+	const { channelType } = data;
 
 	const form = useForm({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: "",
-			type: ChannelType.TEXT,
+			type: channelType || ChannelType.TEXT,
 		},
 	});
+
+	useEffect(() => {
+		if (channelType) form.setValue("type", channelType);
+		else form.setValue("type", ChannelType.TEXT);
+	}, [channelType, form])
 
 	const isLoading = form.formState.isSubmitting;
 
