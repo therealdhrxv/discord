@@ -3,8 +3,8 @@
 import { Member, Profile, Server, MemberRole } from "@prisma/client";
 import { ShieldCheck, ShieldAlert } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 
+import { cn } from "@/lib/utils";
 import { UserAvatar } from "@/components/user-avatar";
 
 interface ServerMemberProps {
