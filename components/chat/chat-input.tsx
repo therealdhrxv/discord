@@ -1,6 +1,8 @@
 "use client";
 
 import * as z from "zod";
+import axios from "axios";
+import qs from "query-string";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Smile } from "lucide-react";
@@ -14,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 interface ChatInputProps {
-	apiUrl: string;
+	apiURL: string;
 	query: Record<string, any>;
 	name: string | undefined;
 	type: "conversation" | "channel";
@@ -25,7 +27,6 @@ const formSchema = z.object({
 });
 
 export const ChatInput = (props: ChatInputProps) => {
-    
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -37,7 +38,11 @@ export const ChatInput = (props: ChatInputProps) => {
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
-			console.log(values);
+			const url = qs.stringifyUrl({
+				url: props.apiURL,
+				query: props.query,
+			});
+			await axios.post(url, values);
 		} catch (error) {
 			console.log(error);
 		}
