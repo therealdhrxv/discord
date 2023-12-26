@@ -1,10 +1,9 @@
 import { redirectToSignIn } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
-import { ChannelType } from "@prisma/client";
 
 import { db } from "@/lib/db";
-import { currentProfile } from "@/lib/current-profile";
+import { ChatInput } from "@/components/chat/chat-input";
 import { ChatHeader } from "@/components/chat/chat-header";
+import { currentProfile } from "@/lib/current-profile";
 
 interface ChannelIdPageProps {
 	params: {
@@ -31,17 +30,27 @@ const ChannelIdPage = async (props: ChannelIdPageProps) => {
 		},
 	});
 
-    // if (!channel || !member) return redirect("/");
+	// if (!channel || !member) redirect("/");
 
 	return (
-        <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
-            <ChatHeader 
-                name={channel?.name}
-                serverId={props.params.serverId}
-                type="channel"
-            />
-        </div>
-    )
+		<div className="bg-white dark:bg-[#313338] flex flex-col h-full">
+			<ChatHeader
+				name={channel?.name}
+				serverId={props.params.serverId}
+				type="channel"
+			/>
+			<div className="flex-1">Future Messages</div>
+			<ChatInput
+				name={channel?.name}
+				type="channel"
+				apiUrl="api/socket/messages"
+				query={{
+					channelId: channel?.id,
+					serverId: channel?.serverId,
+				}}
+			/>
+		</div>
+	);
 };
 
 export default ChannelIdPage;
