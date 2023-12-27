@@ -6,6 +6,7 @@ import qs from "query-string";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Input } from "@/components/ui/input";
 import { useModal } from "@/hooks/use-modal-store";
@@ -29,7 +30,9 @@ const formSchema = z.object({
 });
 
 export const ChatInput = (props: ChatInputProps) => {
+	
 	const { onOpen } = useModal();
+	const router = useRouter();
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -47,6 +50,8 @@ export const ChatInput = (props: ChatInputProps) => {
 				query: props.query,
 			});
 			await axios.post(url, values);
+			form.reset();
+			router.refresh();
 		} catch (error) {
 			console.log(error);
 		}
