@@ -17,11 +17,12 @@ import {
 	Trash,
 } from "lucide-react";
 
-import ActionTooltip from "@/components/action-tooltip";
-import { UserAvatar } from "@/components/user-avatar";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useModal } from "@/hooks/use-modal-store";
+import ActionTooltip from "@/components/action-tooltip";
+import { UserAvatar } from "@/components/user-avatar";
 import {
 	Form,
 	FormControl,
@@ -59,6 +60,8 @@ export const ChatItem = (props: ChatItemProps) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const params = useParams();
 	const router = useRouter();
+
+	const { onOpen } = useModal();
 
 	const onMemberClick = () => {
 		if (props.member.id === props.currentMember?.id) return;
@@ -239,7 +242,12 @@ export const ChatItem = (props: ChatItemProps) => {
 					)}
 					<ActionTooltip label="Delete">
 						<Trash
-							onClick={() => {}}
+							onClick={() =>
+								onOpen("deleteMessage", {
+									apiURL: `${props.socketURL}/${props.id}`,
+									query: props.socketQuery,
+								})
+							}
 							className="cursor-pointer ml-auto w-4 h-4 text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition"
 						/>
 					</ActionTooltip>
