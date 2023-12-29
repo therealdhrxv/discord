@@ -1,21 +1,25 @@
 "use client";
 
 import { Fragment } from "react";
-import { Member, Message, Profile } from "@prisma/client";
+import { format } from "date-fns";
 import { Loader2, ServerCrash } from "lucide-react";
+import { Member, Message, Profile } from "@prisma/client";
 
+import { ChatItem } from "@/components/chat/chat-item";
 import { ChatWelcome } from "@/components/chat/chat-welcome";
 import { useChatQuery } from "@/hooks/use-chat-query";
 
+const DATE_FORMAT = "d MMM yyyy, HH:mm";
+
 interface ChatMessagesProps {
-	name: string | undefined;
-	member: Member | null;
-	chatId: string | undefined;
+	name: string;
+	member: Member;
+	chatId: string;
 	apiURL: string;
 	socketURL: string;
-	socketQuery: Record<string, any>;
+	socketQuery: Record<string, string>;
 	paramKey: "channelId" | "conversationId";
-	paramValue: string | undefined;
+	paramValue: string;
 	type: "channel" | "conversation";
 }
 
@@ -26,6 +30,7 @@ type MessageWithMemberWithProfile = Message & {
 };
 
 export const ChatMessages = (props: ChatMessagesProps) => {
+	
 	const queryKey = `chat:${props.chatId}`;
 	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } = useChatQuery({
 		queryKey: queryKey,
@@ -63,11 +68,28 @@ export const ChatMessages = (props: ChatMessagesProps) => {
 			<div className="flex flex-col-reverse mt-auto">
 				{data?.pages?.map((group, i) => (
 					<Fragment key={i}>
-						{group.items.map((message: MessageWithMemberWithProfile) => (
-							<div key={message.id}>
-								{message.content}
-							</div>
-						))}
+						{group.items.map(
+							(message: MessageWithMemberWithProfile) => (
+								<ChatItem
+									key={message.id}
+									id={message.id}
+									currentMember={props.member}
+									member={message.member}
+									content={message.content}
+									fileURL={message.fileURL}
+									deleted={message.deleted}
+									timestamp={format(
+										new Date(message.createdAt),
+										DATE_FORMAT
+									)}
+									isUpdated={
+										message.updatedAt !== message.createdAt
+									}
+									socketURL={props.socketURL}
+									socketQuery={props.socketQuery}
+								/>
+							)
+						)}
 					</Fragment>
 				))}
 			</div>

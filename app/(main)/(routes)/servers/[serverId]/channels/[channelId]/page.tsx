@@ -1,5 +1,5 @@
 import { redirectToSignIn } from "@clerk/nextjs";
-// import { redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
 import { ChatInput } from "@/components/chat/chat-input";
@@ -15,7 +15,7 @@ interface ChannelIdPageProps {
 }
 
 const ChannelIdPage = async (props: ChannelIdPageProps) => {
-	
+
 	const profile = await currentProfile();
 	if (!profile) return redirectToSignIn();
 
@@ -27,36 +27,36 @@ const ChannelIdPage = async (props: ChannelIdPageProps) => {
 
 	const member = await db.member.findFirst({
 		where: {
-			id: props.params.serverId,
+			serverId: props.params.serverId,
 			profileId: profile.id,
 		},
 	});
 
-	// if (!channel || !member) redirect("/");
+	if (!channel || !member) redirect("/");
 
 	return (
 		<div className="bg-white dark:bg-[#313338] flex flex-col h-full">
 			<ChatHeader
-				name={channel?.name}
+				name={channel.name}
 				serverId={props.params.serverId}
 				type="channel"
 			/>
 			<ChatMessages
 				type="channel"
 				member={member}
-				name={channel?.name}
-				chatId={channel?.id}
+				name={channel.name}
+				chatId={channel.id}
 				apiURL="/api/messages"
 				socketURL="/api/socket/messages"
 				socketQuery={{
-					channelId: channel?.id,
-					serverId: channel?.serverId,
+					channelId: channel.id,
+					serverId: channel.serverId,
 				}}
 				paramKey="channelId"
-				paramValue={channel?.id}
+				paramValue={channel.id}
 			/>
 			<ChatInput
-				name={channel?.name}
+				name={channel.name}
 				type="channel"
 				apiURL="/api/socket/messages"
 				query={{
