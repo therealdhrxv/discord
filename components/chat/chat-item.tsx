@@ -86,6 +86,20 @@ export const ChatItem = (props: ChatItemProps) => {
 
 	const isLoading = form.formState.isSubmitting;
 
+	const onSubmit = async (values: z.infer<typeof formSchema>) => {
+		try {
+			const url = qs.stringifyUrl({
+				url: `${props.socketURL}/${props.id}`,
+				query: props.socketQuery,
+			});
+			await axios.patch(url, values);
+			form.reset();
+			setIsEditing(false);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	useEffect(() => {
 		form.reset({
 			content: props.content,
@@ -176,7 +190,7 @@ export const ChatItem = (props: ChatItemProps) => {
 						<Form {...form}>
 							<form
 								className="flex items-center w-full gap-x-2 pt-2"
-								onSubmit={() => {}}
+								onSubmit={form.handleSubmit(onSubmit)}
 							>
 								<FormField
 									control={form.control}
