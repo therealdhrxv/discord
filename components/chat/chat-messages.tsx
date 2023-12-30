@@ -9,6 +9,7 @@ import { ChatItem } from "@/components/chat/chat-item";
 import { ChatWelcome } from "@/components/chat/chat-welcome";
 import { useChatQuery } from "@/hooks/use-chat-query";
 import { useChatSocket } from "@/hooks/use-chat-socket";
+import { useChatScroll } from "@/hooks/use-chat-scroll";
 import { MessageWithMemberWithProfile } from "@/types";
 
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
@@ -42,6 +43,14 @@ export const ChatMessages = (props: ChatMessagesProps) => {
 
 	const chatRef = useRef<ElementRef<"div">>(null);
 	const bottomRef = useRef<ElementRef<"div">>(null);
+
+	useChatScroll({
+		chatRef,
+		bottomRef,
+		loadMore: fetchNextPage,
+		shouldLoadMore: !hasNextPage && !!hasNextPage,
+		count: data?.pages?.[0]?.items?.length ?? 0,
+	});
 
 	if (status === "pending") {
 		return (
