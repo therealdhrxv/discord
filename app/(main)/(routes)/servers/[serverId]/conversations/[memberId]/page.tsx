@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { redirectToSignIn } from "@clerk/nextjs";
 
 import { db } from "@/lib/db";
+import { MediaRoom } from "@/components/media-room";
 import { ChatInput } from "@/components/chat/chat-input";
 import { ChatHeader } from "@/components/chat/chat-header";
 import { ChatMessages } from "@/components/chat/chat-messages";
@@ -19,7 +20,7 @@ interface MemberIdPageProps {
 }
 
 const MemberIdPage = async (props: MemberIdPageProps) => {
-
+	
 	const profile = await currentProfile();
 	if (!profile) return redirectToSignIn();
 
@@ -49,27 +50,38 @@ const MemberIdPage = async (props: MemberIdPageProps) => {
 				serverId={props.params.serverId}
 				type="conversation"
 			/>
-			<ChatMessages
-				member={currentMember}
-				name={otherMember.profile.name}
-				chatId={conversation.id}
-				type="conversation"
-				apiURL="/api/direct-messages"
-				paramKey="conversationId"
-				paramValue={conversation.id}
-				socketURL="/api/socket/direct-messages"
-				socketQuery={{
-					conversationId: conversation.id,
-				}}
-			/>
-			<ChatInput
-				name={otherMember.profile.name}
-				type="conversation"
-				apiURL="/api/socket/direct-messages"
-				query={{
-					conversationId: conversation.id,
-				}}
-			/>
+			{props.searchParams.video && (
+				<MediaRoom
+					chatId={conversation.id}
+					video={true}
+					audio={true}
+				/>
+			)}
+			{!props.searchParams.video && (
+				<>
+					<ChatMessages
+						member={currentMember}
+						name={otherMember.profile.name}
+						chatId={conversation.id}
+						type="conversation"
+						apiURL="/api/direct-messages"
+						paramKey="conversationId"
+						paramValue={conversation.id}
+						socketURL="/api/socket/direct-messages"
+						socketQuery={{
+							conversationId: conversation.id,
+						}}
+					/>
+					<ChatInput
+						name={otherMember.profile.name}
+						type="conversation"
+						apiURL="/api/socket/direct-messages"
+						query={{
+							conversationId: conversation.id,
+						}}
+					/>
+				</>
+			)}
 		</div>
 	);
 };
